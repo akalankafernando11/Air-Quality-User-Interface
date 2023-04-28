@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP Datalogging Firebase App</title>
+
+    <!-- include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
+
+    <!-- include only the Firebase features as you need -->
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+
+    <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCTogke3NH_4Fir_dpJtEY7fPzKhsh-W_8",
+  authDomain: "esp-firebase-demo-19eec.firebaseapp.com",
+  databaseURL: "https://esp-firebase-demo-19eec-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "esp-firebase-demo-19eec",
+  storageBucket: "esp-firebase-demo-19eec.appspot.com",
+  messagingSenderId: "929034545213",
+  appId: "1:929034545213:web:2524c0cc2ec286c5356254"
+};
+ // Initialize firebase
+ firebase.initializeApp(firebaseConfig);
+      // Make auth and database references
+      const auth = firebase.auth();
+
+      const db = firebase.database();
+
+    </script>
+
+    <!-- include highchartsjs to build the charts-->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <!-- include to use jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--include icons from fontawesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- include Gauges Javascript library-->
+    <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script>
+    <!--reference for favicon-->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!--reference a stylesheet-->
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+  </head>
+
+  <body>
+
+    <!--TOP BAR-->
+    <div class="topnav">
+      <h1>Simon-Aire Air Quality Monitor<i class="fas fa-clipboard-list"></i></h1>
+    </div>
+
+    <!--AUTHENTICATION BAR (USER DETAILS/LOGOUT BUTTON)-->
+    <div id="authentication-bar" style="display: none;">
+      <p><span id="authentication-status">User logged in</span>
+        <span id="user-details">USEREMAIL</span>
+        <a href="/" id="logout-link">(logout)</a><br><br>
+        <label for="DeviceID">Device ID</label>
+          <select id = "device-select">
+             <option value="41112151719836"> Bed Room </option>
+             <option value="13257200163201200"> Living Room </option-->
+          </select><br>
+          <span id="demo"></span>
+      </p>
+    </div>
+
+    <!--LOGIN FORM-->
+    <form id="login-form" style="display: none;">
+      <div class="form-elements-container">
+        <label for="input-email"><b>Email</b></label>
+        <input type="text" placeholder="Enter Username" id="input-email" required>
+
+        <label for="input-password"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" id="input-password" required>
+
+        <button type="submit" id="login-button">Login</button>
+        <p id="error-message" style="color:red;"></p>
+      </div>
+    </form>
+
+    <!--CONTENT (SENSOR READINGS)-->
+    <div class="content-sign-in" id="content-sign-in" style="display: none;">
+
+      <!--LAST UPDATE-->
+      <p><span class ="date-time">Last update: <span id="lastUpdate"></span></span></p>
+      <p>
+        Cards: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
+        Gauges: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
+        Graphs: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
+      </p>
+      <div id="cards-div">
+        <div class="cards">
+          <div class="card">
+            <!--TEMPERATURE-->
+            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE: <span class="reading"><span id="temp"></span> &deg;C</span></p>
+            <!--HUMIDITY-->
+            <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY: <span class="reading"><span id="hum"></span> &percnt;</span></p>
+            <!--CO2-->
+            <p><i class="fab fa-cloudversify" style="color:#7e7e79;"></i> CO2: <span class="reading"><span id="co2"></span> PPM</span></p>
+            <!--CO-->
+            <p><i class="fas fa-wind" style="color:#e437c7;"></i> CO: <span class="reading"><span id="co"></span> PPM</span></p>
+          </div>     
+        </div>
+      </div>
+      <!--GAUGES-->
+      <div id ="gauges-div">
+        <div class="cards">
+          <!--TEMPERATURE-->
+          <div class="card">
+            <canvas id="gauge-temperature"></canvas>
+          </div>
+          <!--HUMIDITY-->
+          <div class="card">
+            <canvas id="gauge-humidity"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!--CHARTS-->
+      <div id="charts-div" style="display:none">
+        <!--SET NUMBER OF READINGS INPUT FIELD-->
+        <div>
+          <p> Number of readings: <input type="number" id="charts-range"><br> the Number less than 25</p>
+        </div>
+                <!--CHART-->
+                <!--div class="cards">
+                  <div class="card">
+                    <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> GRAPHS</p>
+                    <div id="chart" class="chart-container"></div>
+                  </div>
+                </div-->
+        <!--TEMPERATURE-CHART-->
+        <div class="cards">
+          <div class="card">
+            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE GRAPHS</p>
+            <div id="chart-temperature" class="chart-container"></div>
+          </div>
+        </div>
+        <!--HUMIDITY-CHART-->
+        <div class="cards">
+          <div class="card">
+            <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY GRAPHS</p>
+            <div id="chart-humidity" class="chart-container"></div>
+          </div>
+        </div>
+        <!--CO2-CHART-->
+        <div class="cards">
+          <div class="card">
+            <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> CO2 GRAPHS</p>
+            <div id="chart-co2" class="chart-container"></div>
+          </div>
+        </div>
+
+        <!--CO-CHART-->
+        <div class="cards">
+            <div class="card">
+              <p><i class="fas fa-angle-double-down" style="color:#37e49c;"></i> CO GRAPHS</p>
+              <div id="chart-co" class="chart-container"></div>
+            </div>
+          </div>
+        </div>
+    <!--BUTTONS TO HANDLE DATA-->
+    <p>
+      <!--View data button-->
+      <button id="view-data-button">View all data</button>
+      <!--Hide data button-->
+      <button id="hide-data-button" style= "display:none;">Hide data</button>
+      <!--Delete data button-->
+      <button id="delete-button" class="deletebtn">Delete data</button>
+    </p>
+    <!--Modal to delete data-->
+    <div id="delete-modal" class="modal" sytle="display:none">
+      <span onclick = "document.getElementById('delete-modal').style.display='none'" class="close" title="Close Modal">×</span>
+      <form id= "delete-data-form" class="modal-content" action="/">
+        <div class="container">
+          <h1>Delete Data</h1>
+          <p>Are you sure you want to delete all data from database?</p>
+          <div class="clearfix">
+            <button type="button" onclick="document.getElementById('delete-modal').style.display='none'" class="cancelbtn">Cancel</button>
+            <button type="submit" onclick="document.getElementById('delete-modal').style.display='none'" class="deletebtn">Delete</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!--TABLE WITH ALL DATA-->
+    <div class ="cards">
+      <div class="card" id="table-container" style= "display:none;">
+        <table id="readings-table">
+            <tr id="theader">
+              <th>ID</th>
+              <th>Timestamp</th>
+              <th>Temp (ºC)</th>
+              <th>Hum (%)</th>
+              <th>CO2 (PPM)</th>
+              <th>CO (PPM)</th>
+            </tr>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+        <p><button id="load-data" style= "display:none;">More results...</button></p>
+      </div>
+    </div>
+
+  </div>
+
+    <!--INCLUDE JS FILES-->
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/charts-definition.js"></script>
+    <script src="scripts/gauges-definition.js"></script>
+    <script src="scripts/index.js"></script>
+  </body>
+
+</html>
