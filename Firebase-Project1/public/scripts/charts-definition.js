@@ -74,7 +74,8 @@ function createTemperatureChart() {
   var chart = new Highcharts.Chart({
     chart:{ 
       renderTo:'chart-temperature',
-      type: 'column' 
+      //type: 'column' 
+      type: 'line'
     },
     series: [
       {
@@ -99,7 +100,7 @@ function createTemperatureChart() {
       // labels property of the chart
       labels: {
         formatter: function() {
-          return Highcharts.dateFormat('%H:%M %a',//%a %d %b %Y',
+          return Highcharts.dateFormat('%I:%M %p %a',//%a %d %b %Y',
                                         this.value);
         }
       }
@@ -121,7 +122,8 @@ function createHumidityChart(){
   var chart = new Highcharts.Chart({
     chart:{ 
       renderTo:'chart-humidity',
-      type: 'column'  
+      //type: 'column' 
+      type: 'line'
     },
     series: [{
       name: 'Room Humidity'
@@ -144,7 +146,7 @@ function createHumidityChart(){
       // labels property of the chart
       labels: {
         formatter: function() {
-          return Highcharts.dateFormat('%H:%M %a',//%a %d %b %Y',
+          return Highcharts.dateFormat('%I:%M %p %a',//%a %d %b %Y',
                                         this.value);
         }
       }
@@ -168,7 +170,8 @@ function createCO2Chart() {
   var chart = new Highcharts.Chart({
     chart:{ 
       renderTo:'chart-co2',
-      type: 'column'
+      //type: 'column' 
+      type: 'line'
     },
     series: [{
       name: 'Room CO2'
@@ -191,7 +194,7 @@ function createCO2Chart() {
       // labels property of the chart
       labels: {
         formatter: function() {
-          return Highcharts.dateFormat('%H:%M %a',//%a %d %b %Y',
+          return Highcharts.dateFormat('%I:%M %p %a',//%a %d %b %Y',
                                         this.value);
         }
       }
@@ -213,7 +216,8 @@ function createCOChart() {
   var chart = new Highcharts.Chart({
     chart:{ 
       renderTo:'chart-co',
-      type: 'column'
+      //type: 'column' 
+      type: 'line'
     },
     series: [{
       name: 'Room CO'
@@ -236,7 +240,7 @@ function createCOChart() {
       // labels property of the chart
       labels: {
         formatter: function() {
-          return Highcharts.dateFormat('%H:%M %a',//%a %d %b %Y',
+          return Highcharts.dateFormat('%I:%M %p %a',//%a %d %b %Y',
                                         this.value);
         }
       }

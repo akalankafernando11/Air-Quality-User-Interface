@@ -75,19 +75,19 @@ function plotValues(chart, timestamp, value){
   const deleteDataFormElement = document.querySelector('#delete-data-form');
   const viewDataButtonElement = document.getElementById('view-data-button');
   const hideDataButtonElement = document.getElementById('hide-data-button');
-  const tableContainerElement = document.querySelector('#table-container');
-  const chartsRangeInputElement = document.getElementById('charts-range');
+  //const tableContainerElement = document.querySelector('#table-container');
+  //const chartsRangeInputElement = document.getElementById('charts-range');
   const loadDataButtonElement = document.getElementById('load-data');
   const cardsCheckboxElement = document.querySelector('input[name=cards-checkbox]');
   const gaugesCheckboxElement = document.querySelector('input[name=gauges-checkbox]');
-  const chartsCheckboxElement = document.querySelector('input[name=charts-checkbox]');
+  //const chartsCheckboxElement = document.querySelector('input[name=charts-checkbox]');
   const dropdownElement = document.querySelector('#device-select');
   const tableElement = document.querySelector('#tbody');
 
   // DOM elements for sensor readings
   const cardsReadingsElement = document.querySelector("#cards-div");
   const gaugesReadingsElement = document.querySelector("#gauges-div");
-  const chartsDivElement = document.querySelector('#charts-div');
+  //const chartsDivElement = document.querySelector('#charts-div');
   const tempElement = document.getElementById("temp");
   const humElement = document.getElementById("hum");
   const co2Element = document.getElementById("co2");
@@ -124,19 +124,21 @@ function plotValues(chart, timestamp, value){
       document.getElementById("demo").innerHTML = deviceId;
       // Database paths (with user UID)
       var dbPath = 'UsersData/' + uid.toString() + '/' + deviceId.toString();
-      var chartPath = 'UsersData/' + uid.toString() + '/charts/range';
+     // var chartPath = 'UsersData/' + uid.toString() + '/charts/range';
   
       // Database references
       var dbRef = firebase.database().ref(dbPath);
-      var chartRef = firebase.database().ref(chartPath);
+     // var chartRef = firebase.database().ref(chartPath);
   
       // CHARTS
       // Number of readings to plot on charts
-      var chartRange = 0;
+      //var chartRange = 0;
       // Get number of readings to plot saved on database (runs when the page first loads and whenever there's a change in the database)
-      chartRef.on('value', snapshot =>{
-        chartRange = Number(snapshot.val());
-        console.log(chartRange);
+     // chartRef.on('value', snapshot =>{
+      dbRef.on('value', (snapshot) =>{
+       // chartRange = Number(snapshot.val());
+        //console.log(chartRange);
+        console.log(snapshot.val());
         // Delete all data from charts to update with new values when a new range is selected
         //chartA.destroy();
         chartT.destroy();
@@ -151,7 +153,7 @@ function plotValues(chart, timestamp, value){
         chartco = createCOChart();
         // Update the charts with the new range
         // Get the latest readings and plot them on charts (the number of plotted readings corresponds to the chartRange value)
-        dbRef.orderByKey().limitToLast(chartRange).on('child_added', snapshot =>{
+        dbRef.orderByKey().limitToLast(25).on('child_added', snapshot =>{
           var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
           // Save values on variables
           var temperature = jsonData.temperature;
@@ -167,11 +169,12 @@ function plotValues(chart, timestamp, value){
           plotValues(chartco, timestamp, co);
         });
       });
+      
   
       // Update database with new range (input field)
-      chartsRangeInputElement.onchange = () =>{
+      /*chartsRangeInputElement.onchange = () =>{
         chartRef.set(chartsRangeInputElement.value);
-      };
+      };*/
   
       //CHECKBOXES
       // Checbox (cards for sensor readings)
@@ -193,14 +196,14 @@ function plotValues(chart, timestamp, value){
         }
       });
       // Checbox (charta for sensor readings)
-      chartsCheckboxElement.addEventListener('change', (e) =>{
+      /*chartsCheckboxElement.addEventListener('change', (e) =>{
         if (chartsCheckboxElement.checked) {
           chartsDivElement.style.display = 'block';
         }
         else{
           chartsDivElement.style.display = 'none';
         }
-      });
+      });*/
 
       // CARDS
       // Get the latest readings and display on cards
@@ -238,7 +241,7 @@ function plotValues(chart, timestamp, value){
   
       // DELETE DATA
       // Add event listener to open modal when click on "Delete Data" button
-      deleteButtonElement.addEventListener('click', e =>{
+/*      deleteButtonElement.addEventListener('click', e =>{
         console.log("Remove data");
         e.preventDefault;
         deleteModalElement.style.display="block";
@@ -248,10 +251,10 @@ function plotValues(chart, timestamp, value){
       deleteDataFormElement.addEventListener('submit', (e) => {
         // delete data (readings)
         dbRef.remove();
-      });
+      });*/
   
       // TABLE
-      var lastReadingTimestamp; //saves last timestamp displayed on the table
+ /*     var lastReadingTimestamp; //saves last timestamp displayed on the table
       // Function that creates the table with the first 100 readings
       function createTable(){
         tableElement.innerHTML = '';
@@ -288,10 +291,10 @@ function plotValues(chart, timestamp, value){
             }
           }
         });
-      };
+      };*/
   
       // append readings to table (after pressing More results... button)
-      function appendToTable(){
+      /*function appendToTable(){
         var dataList = []; // saves list of readings returned by the snapshot (oldest-->newest)
         var reversedList = []; // the same as previous, but reversed (newest--> oldest)
         console.log("APEND");
@@ -332,26 +335,26 @@ function plotValues(chart, timestamp, value){
             });
           }
         });
-      }
+      }*/
   
-      viewDataButtonElement.addEventListener('click', (e) =>{
+      /*viewDataButtonElement.addEventListener('click', (e) =>{
         // Toggle DOM elements
         tableContainerElement.style.display = 'block';
         viewDataButtonElement.style.display ='none';
         hideDataButtonElement.style.display ='inline-block';
         loadDataButtonElement.style.display = 'inline-block'
         createTable();
-      });
+      });*/
   
       /*loadDataButtonElement.addEventListener('click', (e) => {
         appendToTable();
       });*/
   
-      hideDataButtonElement.addEventListener('click', (e) => {
+      /*hideDataButtonElement.addEventListener('click', (e) => {
         tableContainerElement.style.display = 'none';
         viewDataButtonElement.style.display = 'inline-block';
         hideDataButtonElement.style.display = 'none';
-      });
+      });*/
   
     // IF USER IS LOGGED OUT
     } else{

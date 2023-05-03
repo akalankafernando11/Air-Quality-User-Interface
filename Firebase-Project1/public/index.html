@@ -56,7 +56,7 @@ const firebaseConfig = {
 
     <!--TOP BAR-->
     <div class="topnav">
-      <h1>Simon-Aire Air Quality Monitor<i class="fas fa-clipboard-list"></i></h1>
+      <h1>Simon-Aire Air Quality Monitor</h1>
     </div>
 
     <!--AUTHENTICATION BAR (USER DETAILS/LOGOUT BUTTON)-->
@@ -95,7 +95,7 @@ const firebaseConfig = {
       <p>
         Cards: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
         Gauges: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
-        Graphs: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
+        <!--Graphs: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked-->
       </p>
       <div id="cards-div">
         <div class="cards">
@@ -126,11 +126,11 @@ const firebaseConfig = {
       </div>
 
       <!--CHARTS-->
-      <div id="charts-div" style="display:none">
+      <!--div id="charts-div" style="display:none"-->
         <!--SET NUMBER OF READINGS INPUT FIELD-->
-        <div>
+        <!--div>
           <p> Number of readings: <input type="number" id="charts-range"><br> the Number less than 25</p>
-        </div>
+        </div-->
                 <!--CHART-->
                 <!--div class="cards">
                   <div class="card">
@@ -138,24 +138,25 @@ const firebaseConfig = {
                     <div id="chart" class="chart-container"></div>
                   </div>
                 </div-->
+                <h1>Last 6 hours</h1>
         <!--TEMPERATURE-CHART-->
         <div class="cards">
           <div class="card">
-            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE GRAPHS</p>
+            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE</p>
             <div id="chart-temperature" class="chart-container"></div>
           </div>
         </div>
         <!--HUMIDITY-CHART-->
         <div class="cards">
           <div class="card">
-            <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY GRAPHS</p>
+            <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY</p>
             <div id="chart-humidity" class="chart-container"></div>
           </div>
         </div>
         <!--CO2-CHART-->
         <div class="cards">
           <div class="card">
-            <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> CO2 GRAPHS</p>
+            <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> CO2</p>
             <div id="chart-co2" class="chart-container"></div>
           </div>
         </div>
@@ -163,22 +164,22 @@ const firebaseConfig = {
         <!--CO-CHART-->
         <div class="cards">
             <div class="card">
-              <p><i class="fas fa-angle-double-down" style="color:#37e49c;"></i> CO GRAPHS</p>
+              <p><i class="fas fa-angle-double-down" style="color:#37e49c;"></i> CO</p>
               <div id="chart-co" class="chart-container"></div>
             </div>
           </div>
-        </div>
+        <!--/div-->
     <!--BUTTONS TO HANDLE DATA-->
-    <p>
+    <!--p-->
       <!--View data button-->
-      <button id="view-data-button">View all data</button>
+      <!--button id="view-data-button">View all data</button-->
       <!--Hide data button-->
-      <button id="hide-data-button" style= "display:none;">Hide data</button>
+      <!--button id="hide-data-button" style= "display:none;">Hide data</button-->
       <!--Delete data button-->
-      <button id="delete-button" class="deletebtn">Delete data</button>
-    </p>
+      <!--button id="delete-button" class="deletebtn">Delete data</button>
+    </p-->
     <!--Modal to delete data-->
-    <div id="delete-modal" class="modal" sytle="display:none">
+    <!--div id="delete-modal" class="modal" sytle="display:none">
       <span onclick = "document.getElementById('delete-modal').style.display='none'" class="close" title="Close Modal">×</span>
       <form id= "delete-data-form" class="modal-content" action="/">
         <div class="container">
@@ -190,10 +191,10 @@ const firebaseConfig = {
           </div>
         </div>
       </form>
-    </div>
+    </div-->
 
     <!--TABLE WITH ALL DATA-->
-    <div class ="cards">
+    <!--div class ="cards">
       <div class="card" id="table-container" style= "display:none;">
         <table id="readings-table">
             <tr id="theader">
@@ -209,7 +210,7 @@ const firebaseConfig = {
         </table>
         <p><button id="load-data" style= "display:none;">More results...</button></p>
       </div>
-    </div>
+    </div-->
 
   </div>
 
