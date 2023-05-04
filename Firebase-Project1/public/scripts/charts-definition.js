@@ -101,7 +101,7 @@ function createTemperatureChart() {
             labels: {
                 formatter: function () {
                     return Highcharts.dateFormat(
-                        '%I:%M %p %a', //%a %d %b %Y',
+                        '%a', //%a %d %b %Y',
                         this.value
                     );
                 },
@@ -151,7 +151,7 @@ function createHumidityChart() {
             labels: {
                 formatter: function () {
                     return Highcharts.dateFormat(
-                        '%I:%M %p %a', //%a %d %b %Y',
+                        '%a', //%a %d %b %Y',
                         this.value
                     );
                 },
@@ -203,7 +203,7 @@ function createCO2Chart() {
             labels: {
                 formatter: function () {
                     return Highcharts.dateFormat(
-                        '%I:%M %p %a', //%a %d %b %Y',
+                        '%a', //%a %d %b %Y',
                         this.value
                     );
                 },
@@ -253,7 +253,7 @@ function createCOChart() {
             labels: {
                 formatter: function () {
                     return Highcharts.dateFormat(
-                        '%I:%M %p %a', //%a %d %b %Y',
+                        '%a', //%a %d %b %Y',
                         this.value
                     );
                 },
