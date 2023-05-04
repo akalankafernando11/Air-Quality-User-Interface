@@ -6,6 +6,48 @@ function epochToJsDate(epochTime) {
 function epochToJsDate1(epochTime) {
     return new Date(epochTime * 1000);
 }
+
+function groupDataByDay(data) {
+    const currentDate = new Date();
+    const weekAgoTimestamp = currentDate.getTime() - 7 * 24 * 60 * 60 * 1000;
+
+    const dataByDay = Array.from({ length: 7 }, () => ({
+        co: 0,
+        co2: 0,
+        humidity: 0,
+        id: '',
+        temperature: 0,
+        timestamp: 0,
+        count: 0,
+    }));
+
+    data.forEach(item => {
+        const timestamp = parseInt(item.timestamp) * 1000;
+        const dayIndex = Math.floor((timestamp - weekAgoTimestamp) / (24 * 60 * 60 * 1000));
+        if (dayIndex >= 0 && dayIndex < 7) {
+            const dayData = dataByDay[dayIndex];
+            dayData.co += parseFloat(item.co);
+            dayData.co2 += parseFloat(item.co2);
+            dayData.humidity += parseFloat(item.humidity);
+            dayData.temperature += parseFloat(item.temperature);
+            dayData.count++;
+            dayData.id = item.id;
+            dayData.timestamp = timestamp;
+        }
+    });
+
+    const averageDataByDay = dataByDay.map(dayData => ({
+        co: dayData.count > 0 ? (dayData.co / dayData.count).toFixed(2) : '0.00',
+        co2: dayData.count > 0 ? (dayData.co2 / dayData.count).toFixed(2) : '0.00',
+        humidity: dayData.count > 0 ? (dayData.humidity / dayData.count).toFixed(2) : '0.00',
+        id: dayData.id,
+        temperature: dayData.count > 0 ? (dayData.temperature / dayData.count).toFixed(2) : '0.00',
+        timestamp: dayData.timestamp,
+    }));
+
+    return averageDataByDay;
+}
+
 // convert time to human-readable format YYYY/MM/DD HH:MM:SS
 function epochToDateTime(epochTime) {
     var epochDate = new Date(epochToJsDate(epochTime));
@@ -110,57 +152,61 @@ var setupUI = user => {
         // var chartRef = firebase.database().ref(chartPath);
 
         // Listen for changes to the collection
-        dbRef
-            .orderByKey()
-            .limitToLast(25)
-            .on(
-                'value',
-                querySnapshot => {
-                    chartT.destroy();
-                    chartH.destroy();
-                    chartco2.destroy();
-                    chartco.destroy();
+        dbRef.orderByKey().on(
+            'value',
+            querySnapshot => {
+                chartT.destroy();
+                chartH.destroy();
+                chartco2.destroy();
+                chartco.destroy();
 
-                    chartT = createTemperatureChart();
-                    chartH = createHumidityChart();
-                    chartco2 = createCO2Chart();
-                    chartco = createCOChart();
+                chartT = createTemperatureChart();
+                chartH = createHumidityChart();
+                chartco2 = createCO2Chart();
+                chartco = createCOChart();
 
-                    querySnapshot.forEach(function (item) {
-                        const jsonData = item.val();
+                const queryData = [];
 
-                        // Save values on variables
-                        var temperature = jsonData.temperature;
-                        var humidity = jsonData.humidity;
-                        var co2 = jsonData.co2;
-                        var co = jsonData.co;
-                        var timestamp = jsonData.timestamp;
-                        // Plot the values on the charts
-                        //plotValues1(chartA, timestamp, temperature,humidity,co2,co);
-                        plotValues(chartT, timestamp, temperature);
-                        plotValues(chartH, timestamp, humidity);
-                        plotValues(chartco2, timestamp, co2);
-                        plotValues(chartco, timestamp, co);
+                querySnapshot.forEach(function (item) {
+                    const jsonData = item.val();
+                    queryData.push(jsonData);
+                });
 
-                        tempElement.innerHTML = temperature;
-                        humElement.innerHTML = humidity;
-                        co2Element.innerHTML = co2;
-                        coElement.innerHTML = co;
-                        updateElement.innerHTML = epochToDateTime(timestamp);
+                const averageData = groupDataByDay(queryData);
 
-                        var gaugeT = createTemperatureGauge();
-                        var gaugeH = createHumidityGauge();
-                        gaugeT.draw();
-                        gaugeH.draw();
-                        gaugeT.value = temperature;
-                        gaugeH.value = humidity;
-                        updateElement.innerHTML = epochToDateTime(timestamp);
-                    });
-                },
-                error => {
-                    console.log('Error getting documents: ', error);
-                }
-            );
+                averageData.forEach(function (jsonData) {
+                    // Save values on variables
+                    var temperature = jsonData.temperature;
+                    var humidity = jsonData.humidity;
+                    var co2 = jsonData.co2;
+                    var co = jsonData.co;
+                    var timestamp = jsonData.timestamp;
+                    // Plot the values on the charts
+                    //plotValues1(chartA, timestamp, temperature,humidity,co2,co);
+                    plotValues(chartT, timestamp, temperature);
+                    plotValues(chartH, timestamp, humidity);
+                    plotValues(chartco2, timestamp, co2);
+                    plotValues(chartco, timestamp, co);
+
+                    tempElement.innerHTML = temperature;
+                    humElement.innerHTML = humidity;
+                    co2Element.innerHTML = co2;
+                    coElement.innerHTML = co;
+                    updateElement.innerHTML = epochToDateTime(timestamp);
+
+                    var gaugeT = createTemperatureGauge();
+                    var gaugeH = createHumidityGauge();
+                    gaugeT.draw();
+                    gaugeH.draw();
+                    gaugeT.value = temperature;
+                    gaugeH.value = humidity;
+                    updateElement.innerHTML = epochToDateTime(timestamp);
+                });
+            },
+            error => {
+                console.log('Error getting documents: ', error);
+            }
+        );
 
         //CHECKBOXES
         // Checbox (cards for sensor readings)
